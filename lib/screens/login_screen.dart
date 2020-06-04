@@ -41,9 +41,7 @@ class _LogInScreenState extends State<LogInScreen> {
         password: password,
       );
       if (loginUser != null) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-            (Route<dynamic> route) => false);
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
       }
     } catch (e) {
       debugPrint(e.toString());

@@ -12,6 +12,7 @@ class PersistScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -49,9 +50,7 @@ class PersistScaffold extends StatelessWidget {
               trailing: Icon(Icons.arrow_right),
               onTap: () async {
                 await _auth.signOut();
-                Navigator.popUntil(
-                    context, ModalRoute.withName(LogInScreen.id));
-                Navigator.pushNamed(context, LogInScreen.id);
+                Navigator.pushReplacementNamed(context, LogInScreen.id);
               },
             )
           ],

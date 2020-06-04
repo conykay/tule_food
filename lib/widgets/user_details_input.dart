@@ -7,13 +7,16 @@ class DetailsInputWidget extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType,
     this.prefixIcon,
+    this.initValue,
+    this.controller,
   });
   final Function onChanged;
   final String hintText;
   final bool obscureText;
   final TextInputType keyboardType;
   final Widget prefixIcon;
-
+  final String initValue;
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,10 +30,12 @@ class DetailsInputWidget extends StatelessWidget {
           }
           return null;
         },
+        controller: controller,
         textInputAction: TextInputAction.next,
         keyboardType: keyboardType,
         obscureText: obscureText,
         onChanged: onChanged,
+        initialValue: initValue,
         cursorColor: Colors.amber,
         style: TextStyle(
           height: 1.5,

@@ -25,9 +25,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   checkCurrentUser() async {
     var user = await _auth.currentUser();
     user != null
-        ? Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-            (Route<dynamic> route) => false)
+        ? Navigator.pushReplacementNamed(context, HomeScreen.id)
         : debugPrint('user not available');
   }
 

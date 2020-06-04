@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tule/screens/add_menu_item_screen.dart';
+import 'package:tule/services/location_service.dart';
 import 'package:tule/widgets/persist_scaffold.dart';
 import 'package:tule/widgets/registration_buttons.dart';
 import 'package:tule/widgets/title_row.dart';
@@ -15,6 +16,14 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
   final _formKey = GlobalKey<FormState>();
   String kitchenName;
   String kitchenLocation;
+  TextEditingController _controller = TextEditingController();
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +38,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
           child: Column(
             children: [
               TitileRowWidget(
-                title: 'Tule Kitchen',
+                title: 'Karibu Jikoni :)',
               ),
               DetailsInputWidget(
                 hintText: 'Kitchen name',
@@ -39,8 +48,12 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                 hintText: 'Location of operation',
                 prefixIcon: FlatButton(
                   splashColor: Colors.orangeAccent,
-                  onPressed: () {
-                    //todo: current user location on click
+                  onPressed: () async {
+                    kitchenLocation =
+                        await LocationService().getExactLocation();
+                    setState(() {
+                      _controller.text = kitchenLocation;
+                    });
                   },
                   child: Text(
                     'get current',
@@ -50,6 +63,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                     ),
                   ),
                 ),
+                controller: _controller,
               ),
               DetailsInputWidget(
                 hintText: 'Description',
