@@ -3,9 +3,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:tule/constants.dart';
 import 'package:tule/screens/login_screen.dart';
+import 'package:tule/widgets/alert_dialog.dart';
 import 'package:tule/widgets/back_button.dart';
 import 'package:tule/widgets/bottom_info.dart';
 import 'package:tule/widgets/registration_buttons.dart';
@@ -23,21 +22,31 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _auth = FirebaseAuth.instance;
+
   FirebaseUser _user;
+
   String email;
+
   String password;
+
   String username;
+
   String phone;
+
   final _formKey = GlobalKey<FormState>();
-  ProgressDialog progress;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    progress = kGetProgress(context, '', false);
-  }
 
   void _createUser() async {
+    BuildContext dialogContext = context;
+
+    showDialog(
+        context: dialogContext,
+        builder: (_) => TuleAlertDialog(
+              title: 'Getting things set up ...',
+              widget: CircularProgressIndicator(
+                backgroundColor: Colors.deepOrangeAccent,
+              ),
+            ));
+
     try {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -50,9 +59,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         Navigator.pushNamed(context, LogInScreen.id);
       }
     } catch (e) {
-      await progress.hide();
-      kGetProgress(context, e.toString(), true).show();
-      print(e);
+      debugPrint(e.toString());
+      Navigator.pop(dialogContext);
+      showDialog(
+          context: dialogContext,
+          builder: (_) => TuleAlertDialog(
+                title: 'Failed',
+                widget: Text('retry process'),
+              ));
     }
   }
 
@@ -78,7 +92,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 child: Column(
                   children: [
                     TitileRowWidget(
-                      title: 'Create you|r account',
+                      title: 'Create account',
                     ),
                     SizedBox(
                       height: 20.0,
@@ -118,21 +132,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       onPressed: () {
                         if (EmailValidator.validate(email)) {
                           if (_formKey.currentState.validate()) {
-                            setState(() {
-                              progress.show();
-                            });
                             _createUser();
                           }
                         } else {
                           showDialog(
                               context: context,
-                              builder: (_) {
-                                return AlertDialog(
-                                  title: Text('Invalid email $email'),
-                                  content: Text('Enter valid email'),
-                                  elevation: 24.0,
-                                );
-                              });
+                              builder: (_) => TuleAlertDialog(
+                                    title: 'Invalid Email $email',
+                                    widget:
+                                        Text('enter valid email and try again'),
+                                  ));
                         }
                       },
                       padding: 0.0,
@@ -154,7 +163,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       buttonText: 'Log In',
                       // ignore: unnecessary_statements
                       buttonAction: () {
-                        Navigator.pushNamed(context, LogInScreen.id);
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (_, __, ___) => LogInScreen(),
+                            transitionDuration: Duration(seconds: 1),
+                          ),
+                        );
                       },
                     )
                   ],

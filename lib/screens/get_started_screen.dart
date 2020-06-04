@@ -1,12 +1,36 @@
 import 'dart:ui';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tule/screens/home_screen.dart';
 import 'package:tule/screens/sign_up_screen.dart';
 
-class GetStartedScreen extends StatelessWidget {
+var _auth = FirebaseAuth.instance;
+
+class GetStartedScreen extends StatefulWidget {
   static final id = 'get_started_screen';
+
+  @override
+  _GetStartedScreenState createState() => _GetStartedScreenState();
+}
+
+class _GetStartedScreenState extends State<GetStartedScreen> {
+  @override
+  void initState() {
+    super.initState();
+    checkCurrentUser();
+  }
+
+  checkCurrentUser() async {
+    var user = await _auth.currentUser();
+    user != null
+        ? Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (Route<dynamic> route) => false)
+        : debugPrint('user not available');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,16 +41,13 @@ class GetStartedScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextLiquidFill(
-                text: 'Tule',
-                waveColor: Colors.white,
-                boxBackgroundColor: Colors.orange,
-                textStyle: TextStyle(
+              Text(
+                'Tule',
+                style: TextStyle(
                   fontSize: 50.0,
                   fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
-                boxHeight: 80.0,
-                boxWidth: 150.0,
               ),
               Expanded(
                 child: SvgPicture.asset(
@@ -35,10 +56,10 @@ class GetStartedScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                'Discover the best foods from individuals and local hotels near you.',
+                'Discover the best foods from individuals and local hotels near you. Open your own kitchen and get your food out there.',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15.0,
+                  fontSize: 18.0,
                 ),
               ),
               SizedBox(
@@ -52,7 +73,8 @@ class GetStartedScreen extends StatelessWidget {
                 textColor: Colors.black,
                 child: Text(
                   'Get Started',
-                  style: TextStyle(fontSize: 18.0),
+                  style:
+                      TextStyle(fontSize: 18.0, color: Colors.deepOrangeAccent),
                 ),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.0,

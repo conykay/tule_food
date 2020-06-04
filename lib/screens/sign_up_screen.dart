@@ -27,7 +27,13 @@ class SignUpScreen extends StatelessWidget {
                   child: FlatButton(
                     splashColor: Colors.orangeAccent,
                     onPressed: () {
-                      Navigator.pushNamed(context, LogInScreen.id);
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => LogInScreen(),
+                          transitionDuration: Duration(seconds: 1),
+                        ),
+                      );
                     },
                     child: Text(
                       'Log in',
@@ -78,8 +84,13 @@ class SignUpScreen extends StatelessWidget {
               ),
               RegistrationButton(
                 buttonText: 'Create Account',
-                onPressed: () =>
-                    Navigator.pushNamed(context, CreateAccountScreen.id),
+                onPressed: () => Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => CreateAccountScreen(),
+                    transitionDuration: Duration(seconds: 1),
+                  ),
+                ),
                 padding: 20.0,
               ),
             ],
