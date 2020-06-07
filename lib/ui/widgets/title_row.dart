@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TitileRowWidget extends StatelessWidget {
-  const TitileRowWidget({this.title});
+  const TitileRowWidget({this.fontSize, this.title});
   final String title;
+  final double fontSize;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -19,7 +20,7 @@ class TitileRowWidget extends StatelessWidget {
             isRepeatingAnimation: false,
             textStyle: TextStyle(
               color: Colors.orangeAccent,
-              fontSize: 35.0,
+              fontSize: fontSize ?? 35.0,
               fontWeight: FontWeight.w500,
             ),
           ),

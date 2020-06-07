@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tule/screens/login_screen.dart';
-import 'package:tule/screens/open_kitchen_screen.dart';
+import 'package:tule/ui/screens/login_screen.dart';
+import 'package:tule/ui/screens/open_kitchen_screen.dart';
 
 var _auth = FirebaseAuth.instance;
 

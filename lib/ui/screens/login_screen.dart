@@ -1,15 +1,16 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tule/screens/create_account_screen.dart';
-import 'package:tule/screens/forgot_password_screen.dart';
-import 'package:tule/screens/home_screen.dart';
-import 'package:tule/widgets/alert_dialog.dart';
-import 'package:tule/widgets/back_button.dart';
-import 'package:tule/widgets/bottom_info.dart';
-import 'package:tule/widgets/registration_buttons.dart';
-import 'package:tule/widgets/title_row.dart';
-import 'package:tule/widgets/user_details_input.dart';
+import 'package:tule/ui/widgets/alert_dialog.dart';
+import 'package:tule/ui/widgets/back_button.dart';
+import 'package:tule/ui/widgets/bottom_info.dart';
+import 'package:tule/ui/widgets/registration_buttons.dart';
+import 'package:tule/ui/widgets/title_row.dart';
+import 'package:tule/ui/widgets/user_details_input.dart';
+
+import 'create_account_screen.dart';
+import 'forgot_password_screen.dart';
+import 'home_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   static final id = 'login_screen';

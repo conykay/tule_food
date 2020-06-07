@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tule/widgets/back_button.dart';
-import 'package:tule/widgets/registration_buttons.dart';
-import 'package:tule/widgets/title_row.dart';
-import 'package:tule/widgets/user_details_input.dart';
+import 'package:tule/ui/widgets/back_button.dart';
+import 'package:tule/ui/widgets/registration_buttons.dart';
+import 'package:tule/ui/widgets/title_row.dart';
+import 'package:tule/ui/widgets/user_details_input.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   static final id = 'forgot_password_screen';

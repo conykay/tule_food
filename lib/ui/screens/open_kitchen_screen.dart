@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tule/screens/add_menu_item_screen.dart';
-import 'package:tule/services/location_service.dart';
-import 'package:tule/widgets/persist_scaffold.dart';
-import 'package:tule/widgets/registration_buttons.dart';
-import 'package:tule/widgets/title_row.dart';
-import 'package:tule/widgets/user_details_input.dart';
+import 'package:tule/core/services/location_service.dart';
+import 'package:tule/ui/widgets/persist_scaffold.dart';
+import 'package:tule/ui/widgets/registration_buttons.dart';
+import 'package:tule/ui/widgets/title_row.dart';
+import 'package:tule/ui/widgets/user_details_input.dart';
+
+import 'menu_item_screen.dart';
 
 class OpenKitchenScreen extends StatefulWidget {
   static final id = 'open_kitchen';
@@ -17,7 +18,6 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
   String kitchenName;
   String kitchenLocation;
   TextEditingController _controller = TextEditingController();
-
 
   @override
   void dispose() {
@@ -39,6 +39,10 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
             children: [
               TitileRowWidget(
                 title: 'Karibu Jikoni :)',
+                fontSize: 27.0,
+              ),
+              SizedBox(
+                height: 20.0,
               ),
               DetailsInputWidget(
                 hintText: 'Kitchen name',
@@ -46,6 +50,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
               ),
               DetailsInputWidget(
                 hintText: 'Location of operation',
+                readOnly: true,
                 prefixIcon: FlatButton(
                   splashColor: Colors.orangeAccent,
                   onPressed: () async {
@@ -65,6 +70,18 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                 ),
                 controller: _controller,
               ),
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Please be at the business location before clicking "get current", you can change this later.',
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ),
+              ),
               DetailsInputWidget(
                 hintText: 'Description',
               ),
@@ -76,7 +93,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                 child: RegistrationButton(
                   buttonText: 'Next',
                   onPressed: () {
-                    //todo:form validation
+//                    if (_formKey.currentState.validate()) {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
@@ -84,6 +101,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                         transitionDuration: Duration(seconds: 1),
                       ),
                     );
+//                    }
                   },
                   padding: 0.0,
                 ),

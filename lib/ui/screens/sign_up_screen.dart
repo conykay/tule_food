@@ -2,9 +2,10 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tule/screens/create_account_screen.dart';
-import 'package:tule/screens/login_screen.dart';
-import 'package:tule/widgets/registration_buttons.dart';
+import 'package:tule/ui/widgets/registration_buttons.dart';
+
+import 'create_account_screen.dart';
+import 'login_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   static final String id = 'sign_up_screen';

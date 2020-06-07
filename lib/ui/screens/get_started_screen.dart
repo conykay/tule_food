@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tule/screens/home_screen.dart';
-import 'package:tule/screens/sign_up_screen.dart';
+import 'package:tule/locator.dart';
+import 'package:tule/ui/screens/sign_up_screen.dart';
+
+import 'home_screen.dart';
 
 var _auth = FirebaseAuth.instance;
 
@@ -20,6 +22,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   void initState() {
     super.initState();
     checkCurrentUser();
+    setUpLocator();
   }
 
   checkCurrentUser() async {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tule/widgets/persist_scaffold.dart';
+import 'package:tule/ui/widgets/persist_scaffold.dart';
 
 class HomeScreen extends StatefulWidget {
   static final id = 'home_screen';
