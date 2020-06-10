@@ -1,17 +1,61 @@
+import 'package:cloud_firestore_platform_interface/src/geo_point.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tule/core/models/kitchen_model.dart';
 import 'package:tule/core/models/menu_item_model.dart';
+import 'package:tule/core/models/user_model.dart';
+import 'package:tule/core/viewmodels/kitchen_model_CRUD.dart';
 import 'package:tule/core/viewmodels/menu_item_model_CRUD.dart';
+import 'package:tule/core/viewmodels/user_model_CRUD.dart';
 import 'package:tule/ui/screens/add_menu_item_screen.dart';
+import 'package:tule/ui/widgets/alert_dialog.dart';
 import 'package:tule/ui/widgets/title_row.dart';
 
 class AddMenuItems extends StatefulWidget {
-  static final id = 'add_menu_item';
+  static get id => 'add_menu_item';
+
+  String kitchenName;
+  String description;
+  String kitchenLocation;
+  GeoPoint geoPointLocation;
+
+  AddMenuItems(this.kitchenName, this.kitchenLocation, this.geoPointLocation,
+      this.description);
+
   @override
   _AddMenuItemsState createState() => _AddMenuItemsState();
 }
 
 class _AddMenuItemsState extends State<AddMenuItems> {
+  _createKitchen() async {
+    List<MenuItemModel> items = context.read<MenuItemModelCRUD>().menu;
+    showDialog(
+        context: context,
+        builder: (_) => TuleAlertDialog(
+              title: 'creating kitchen...',
+              widget: CircularProgressIndicator(),
+            ));
+    FirebaseUser _uid = await FirebaseAuth.instance.currentUser();
+    KitchenModel newModel = KitchenModel(
+        kid: _uid.uid,
+        kitchenLocation: widget.kitchenLocation,
+        kitchenName: widget.kitchenName,
+        description: widget.description,
+        geoPointLocation: widget.geoPointLocation,
+        menuItems: items.toList());
+
+    await context.read<KitchenModelCRUD>().addKitchen(newModel, _uid.uid);
+    await context
+        .read<UserModelCRUD>()
+        .editUserModel(UserModel(_uid.uid,
+            name: _uid.displayName,
+            email: _uid.email,
+            kitchen: true,
+            Kid: _uid.uid))
+        .then((value) => Navigator.pop(context));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +65,29 @@ class _AddMenuItemsState extends State<AddMenuItems> {
               iconSize: 30.0,
               icon: Icon(Icons.navigate_next),
               onPressed: () {
-                print('done');
+                showDialog(
+                    context: context,
+                    builder: (_) => TuleAlertDialog(
+                          title: 'Confirm',
+                          widget: Text(
+                              'The menu items will be added to your store menu.'),
+                          actions: [
+                            GestureDetector(
+                                onTap: () {
+                                  _createKitchen();
+                                },
+                                child: Text(
+                                  'Done',
+                                  style: TextStyle(fontSize: 20.0),
+                                )),
+                            GestureDetector(
+                                onTap: () => Navigator.pop(context),
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(fontSize: 20.0),
+                                ))
+                          ],
+                        ));
               }),
         ],
       ),
@@ -42,6 +108,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
               ),
               Expanded(
                 child: SizedBox(
+                  height: double.infinity,
                   child: ListView.builder(
                     itemCount: context.watch<MenuItemModelCRUD>().menuSize,
                     itemBuilder: (context, position) {
@@ -49,9 +116,12 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                           context.read<MenuItemModelCRUD>().menu[position];
                       print('this is the url${item.foodImgUrl}');
                       return Card(
+                        elevation: 7.0,
+                        shadowColor: Colors.grey.withOpacity(0.3),
                         margin: EdgeInsets.only(bottom: 15.0),
                         child: Container(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Expanded(
                                 flex: 1,
@@ -67,31 +137,95 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                 ),
                               ),
                               Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Text(
-                                        item.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
+                                flex: 2,
+                                child: Stack(
+                                  overflow: Overflow.visible,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: 10.0, right: 40.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                .copyWith(
+                                                    color: Colors.black54),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(2.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.greenAccent,
+                                                borderRadius:
+                                                    BorderRadius.circular(7.0)),
+                                            child: Text(
+                                              item.price,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  .copyWith(
+                                                      color: Colors.green[800]),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.all(2.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.orangeAccent[100],
+                                                borderRadius:
+                                                    BorderRadius.circular(7.0)),
+                                            child: Text(
+                                              '${item.prepTime} min',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  .copyWith(
+                                                      color:
+                                                          Colors.orange[800]),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        item.prepTime,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1,
+                                    ),
+                                    Positioned(
+                                      left: 170,
+                                      bottom: 45,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.mode_edit,
+                                          size: 30,
+                                          color: Colors.green,
+                                        ),
+                                        onPressed: () {},
                                       ),
-                                      Text(
-                                        item.price,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2,
-                                      )
-                                    ],
-                                  ))
+                                    ),
+                                    Positioned(
+                                      left: 170,
+                                      top: 60,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.delete_forever,
+                                          size: 20,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {},
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),

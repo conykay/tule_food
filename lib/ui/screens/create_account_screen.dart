@@ -40,7 +40,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  void _createUser(UserModelCRUD model) async {
+  void _createUser() async {
     BuildContext dialogContext = context;
 
     showDialog(
@@ -59,7 +59,10 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         _user = await _auth.currentUser();
         UserModel data = UserModel(_user.uid,
             email: _user.email, name: username, kitchen: false, Kid: null);
-        await model.addUserModel(data);
+        UserUpdateInfo userInfo = UserUpdateInfo();
+        userInfo.displayName = username;
+        await _user.updateProfile(userInfo);
+        await context.read<UserModelCRUD>().addUserModel(data);
         Navigator.pushNamed(context, LogInScreen.id);
       }
     } catch (e) {
@@ -135,28 +138,25 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         SizedBox(
                           height: 20.0,
                         ),
-                        Consumer<UserModelCRUD>(
-                            builder: (context, model, child) {
-                          return RegistrationButton(
-                            buttonText: 'Sign up',
-                            onPressed: () {
-                              if (EmailValidator.validate(email)) {
-                                if (_formKey.currentState.validate()) {
-                                  _createUser(model);
-                                }
-                              } else {
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => TuleAlertDialog(
-                                          title: 'Invalid Email $email',
-                                          widget: Text(
-                                              'enter valid email and try again'),
-                                        ));
+                        RegistrationButton(
+                          buttonText: 'Sign up',
+                          onPressed: () {
+                            if (EmailValidator.validate(email)) {
+                              if (_formKey.currentState.validate()) {
+                                _createUser();
                               }
-                            },
-                            padding: 0.0,
-                          );
-                        }),
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => TuleAlertDialog(
+                                        title: 'Invalid Email $email',
+                                        widget: Text(
+                                            'enter valid email and try again'),
+                                      ));
+                            }
+                          },
+                          padding: 0.0,
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(
                               horizontal: 30.0, vertical: 20.0),

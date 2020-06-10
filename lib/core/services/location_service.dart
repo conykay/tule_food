@@ -6,7 +6,7 @@ class LocationService {
   Map<dynamic, dynamic> placeMark;
   String exactLocation;
 
-  getExactLocation() async {
+  Future getExactLocation() async {
     position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
     List<Placemark> placemark =
@@ -20,6 +20,13 @@ class LocationService {
       return GeoPoint(position.latitude, position.longitude).toString();
 
     return exactLocation;
+  }
+
+  Future getGeoPoint() async {
+    position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+
+    return GeoPoint(position.latitude, position.longitude);
   }
 }
 

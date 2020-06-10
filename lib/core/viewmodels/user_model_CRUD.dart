@@ -12,4 +12,8 @@ class UserModelCRUD extends ChangeNotifier {
     await _api.addDocument(data.toJson(), data.id);
     return;
   }
+
+  Future editUserModel(UserModel data) async {
+    await _api.updateDocument(data.toJson(), data.id);
+  }
 }

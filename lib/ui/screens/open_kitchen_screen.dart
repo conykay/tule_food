@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tule/core/services/location_service.dart';
 import 'package:tule/ui/widgets/persist_scaffold.dart';
@@ -17,12 +18,20 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
   final _formKey = GlobalKey<FormState>();
   String kitchenName;
   String kitchenLocation;
+  GeoPoint geoPointLocation;
+  String description;
   TextEditingController _controller = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
+  }
+
+  _getLocation() async {
+    LocationService locationService = LocationService();
+    kitchenLocation = await locationService.getExactLocation();
+    geoPointLocation = await locationService.getGeoPoint();
   }
 
   @override
@@ -54,8 +63,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                 prefixIcon: FlatButton(
                   splashColor: Colors.orangeAccent,
                   onPressed: () async {
-                    kitchenLocation =
-                        await LocationService().getExactLocation();
+                    _getLocation();
                     setState(() {
                       _controller.text = kitchenLocation;
                     });
@@ -93,15 +101,16 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                 child: RegistrationButton(
                   buttonText: 'Next',
                   onPressed: () {
-//                    if (_formKey.currentState.validate()) {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => AddMenuItems(),
-                        transitionDuration: Duration(seconds: 1),
-                      ),
-                    );
-//                    }
+                    if (_formKey.currentState.validate()) {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) => AddMenuItems(kitchenName,
+                              kitchenLocation, geoPointLocation, description),
+                          transitionDuration: Duration(seconds: 1),
+                        ),
+                      );
+                    }
                   },
                   padding: 0.0,
                 ),

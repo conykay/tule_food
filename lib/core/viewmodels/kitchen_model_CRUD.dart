@@ -31,12 +31,12 @@ class KitchenModelCRUD extends ChangeNotifier {
     return;
   }
 
-  Future updateProduct(KitchenModel data, String id) async {
+  Future updateKitchen(KitchenModel data, String id) async {
     await _api.updateDocument(data.toJson(), id);
     return;
   }
 
-  Future addProduct(KitchenModel data, String id) async {
+  Future addKitchen(KitchenModel data, String id) async {
     await _api.addDocument(data.toJson(), id);
   }
 }

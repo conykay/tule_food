@@ -2,25 +2,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tule/core/models/menu_item_model.dart';
 
 class KitchenModel {
-  String Kid;
-  GeoPoint location;
+  String kid;
+  String kitchenName;
+  String description;
+  String kitchenLocation;
+  GeoPoint geoPointLocation;
   List<MenuItemModel> menuItems;
-
-  KitchenModel(this.Kid, {this.location, this.menuItems});
+  KitchenModel(
+      {this.kid,
+      this.kitchenLocation,
+      this.kitchenName,
+      this.description,
+      this.geoPointLocation,
+      this.menuItems});
 
   KitchenModel.fromJson(Map snapshot, String id)
-      : location = snapshot['location'] ?? null,
+      : geoPointLocation = snapshot['location'] ?? null,
+        kitchenLocation = snapshot['kitchenLocation'] ?? '',
+        kitchenName = snapshot['kitchenName'] ?? '',
+        description = snapshot['description'] ?? '',
         menuItems = snapshot['menuItems'] ?? [];
 
   toJson() {
     return {
-      "location": location,
+      "geoPointLocation": geoPointLocation,
       "menuItems": menuItems,
+      "description": description,
+      "kitchenLocation": kitchenLocation,
+      "kitchenName": kitchenName,
     };
-  }
-
-  KitchenModel getInstance(String id) {
-    KitchenModel model = new KitchenModel(id);
-    return model;
   }
 }
