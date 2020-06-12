@@ -27,7 +27,7 @@ class Tule extends StatelessWidget {
             create: (_) => locator<KitchenModelCRUD>()),
         ChangeNotifierProvider<UserModelCRUD>(
           create: (_) => UserModelCRUD(),
-        )
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

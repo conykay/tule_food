@@ -15,10 +15,10 @@ import 'package:tule/ui/widgets/title_row.dart';
 class AddMenuItems extends StatefulWidget {
   static get id => 'add_menu_item';
 
-  String kitchenName;
-  String description;
-  String kitchenLocation;
-  GeoPoint geoPointLocation;
+  final String kitchenName;
+  final String description;
+  final String kitchenLocation;
+  final GeoPoint geoPointLocation;
 
   AddMenuItems(this.kitchenName, this.kitchenLocation, this.geoPointLocation,
       this.description);
@@ -28,32 +28,51 @@ class AddMenuItems extends StatefulWidget {
 }
 
 class _AddMenuItemsState extends State<AddMenuItems> {
+  List<MenuItemModel> _items;
+  int menuSize;
+
   _createKitchen() async {
-    List<MenuItemModel> items = context.read<MenuItemModelCRUD>().menu;
     showDialog(
         context: context,
         builder: (_) => TuleAlertDialog(
-              title: 'creating kitchen...',
-              widget: CircularProgressIndicator(),
+              title: 'Getting your kitchen ready ...',
+              widget: CircularProgressIndicator(
+                backgroundColor: Colors.orange[900],
+              ),
             ));
     FirebaseUser _uid = await FirebaseAuth.instance.currentUser();
     KitchenModel newModel = KitchenModel(
-        kid: _uid.uid,
-        kitchenLocation: widget.kitchenLocation,
-        kitchenName: widget.kitchenName,
-        description: widget.description,
-        geoPointLocation: widget.geoPointLocation,
-        menuItems: items.toList());
+      kid: _uid.uid,
+      kitchenLocation: widget.kitchenLocation,
+      kitchenName: widget.kitchenName,
+      description: widget.description,
+      geoPointLocation: widget.geoPointLocation,
+    );
 
-    await context.read<KitchenModelCRUD>().addKitchen(newModel, _uid.uid);
-    await context
-        .read<UserModelCRUD>()
-        .editUserModel(UserModel(_uid.uid,
-            name: _uid.displayName,
-            email: _uid.email,
-            kitchen: true,
-            Kid: _uid.uid))
-        .then((value) => Navigator.pop(context));
+    try {
+      await context.read<KitchenModelCRUD>().addKitchen(newModel, _uid.uid);
+      await context.read<MenuItemModelCRUD>().addMenuItems(_items);
+      await context
+          .read<UserModelCRUD>()
+          .editUserModel(UserModel(_uid.uid,
+              name: _uid.displayName,
+              email: _uid.email,
+              kitchen: true,
+              Kid: _uid.uid))
+          .then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
+    } catch (e) {
+      Navigator.pop(context);
+      print('failed $e');
+    }
+  }
+
+  @override
+  void initState() {
+    _items = context.read<MenuItemModelCRUD>().menu;
+    super.initState();
   }
 
   @override
@@ -112,9 +131,7 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                   child: ListView.builder(
                     itemCount: context.watch<MenuItemModelCRUD>().menuSize,
                     itemBuilder: (context, position) {
-                      MenuItemModel item =
-                          context.read<MenuItemModelCRUD>().menu[position];
-                      print('this is the url${item.foodImgUrl}');
+                      MenuItemModel item = _items[position];
                       return Card(
                         elevation: 7.0,
                         shadowColor: Colors.grey.withOpacity(0.3),
@@ -129,9 +146,9 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                   height: 100,
                                   width: 100,
                                   decoration: BoxDecoration(
-                                      image: item.foodImgUrl != null
+                                      image: item.image != null
                                           ? DecorationImage(
-                                              image: FileImage(item.foodImgUrl),
+                                              image: FileImage(item.image),
                                               fit: BoxFit.fill)
                                           : null),
                                 ),
@@ -220,7 +237,28 @@ class _AddMenuItemsState extends State<AddMenuItems> {
                                           size: 20,
                                           color: Colors.red,
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) => TuleAlertDialog(
+                                                    title:
+                                                        'Delete ${_items[position].name} from menu ?',
+                                                    actions: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          context
+                                                              .read<
+                                                                  MenuItemModelCRUD>()
+                                                              .removeItem(_items[
+                                                                  position]);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text('Delete'),
+                                                      )
+                                                    ],
+                                                  ));
+                                        },
                                       ),
                                     )
                                   ],

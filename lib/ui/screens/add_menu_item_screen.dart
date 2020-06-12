@@ -83,15 +83,14 @@ class _AddMenuItemScreenState extends State<AddMenuItemScreen> {
             RegistrationButton(
               buttonText: 'Add',
               onPressed: () {
-                //todo:on press adds menu item to user kitchen menu
                 MenuItemModel item = MenuItemModel(
                     name: name,
-                    foodImgUrl: _image ?? null,
+                    foodImgUrl: null,
+                    image: _image,
                     price: price,
                     prepTime: prepTime);
                 context.read<MenuItemModelCRUD>().addItem(item);
 //                Navigator.pop(context);
-                print(item.foodImgUrl.toString());
               },
               padding: 0.0,
             )

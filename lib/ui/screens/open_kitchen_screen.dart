@@ -32,6 +32,9 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
     LocationService locationService = LocationService();
     kitchenLocation = await locationService.getExactLocation();
     geoPointLocation = await locationService.getGeoPoint();
+    setState(() {
+      _controller.text = kitchenLocation;
+    });
   }
 
   @override
@@ -64,9 +67,6 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
                   splashColor: Colors.orangeAccent,
                   onPressed: () async {
                     _getLocation();
-                    setState(() {
-                      _controller.text = kitchenLocation;
-                    });
                   },
                   child: Text(
                     'get current',
@@ -92,6 +92,7 @@ class _OpenKitchenScreenState extends State<OpenKitchenScreen> {
               ),
               DetailsInputWidget(
                 hintText: 'Description',
+                onChanged: (value) => description = value,
               ),
               SizedBox(
                 height: 30.0,

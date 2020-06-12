@@ -1,12 +1,14 @@
 import 'dart:io';
 
 class MenuItemModel {
-  File foodImgUrl;
+  String foodImgUrl;
+  File image;
   String name;
   String price;
   String prepTime;
 
-  MenuItemModel({this.foodImgUrl, this.name, this.price, this.prepTime});
+  MenuItemModel(
+      {this.foodImgUrl, this.image, this.name, this.price, this.prepTime});
 
   MenuItemModel.fromJson(Map snapshot)
       : foodImgUrl = snapshot['foodImgUrl'] ?? '',
@@ -23,6 +25,7 @@ class MenuItemModel {
     };
   }
 
-  //todo:make model firebase friendly and create its api and viewModel, also create the database
-
+  foodImageUrl(String url) {
+    foodImgUrl = url;
+  }
 }
